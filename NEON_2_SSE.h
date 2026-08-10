@@ -2265,6 +2265,8 @@ _NEON2SSE_GLOBAL uint8x16x2_t vtrnq_u8(uint8x16_t a, uint8x16_t b); // VTRN.8 q0
 _NEON2SSE_GLOBAL uint16x8x2_t vtrnq_u16(uint16x8_t a, uint16x8_t b); // VTRN.16 q0,q0
 _NEON2SSE_GLOBAL uint32x4x2_t vtrnq_u32(uint32x4_t a, uint32x4_t b); // VTRN.32 q0,q0
 _NEON2SSESTORAGE float32x4x2_t vtrnq_f32(float32x4_t a, float32x4_t b); // VTRN.32 q0,q0
+_NEON2SSESTORAGE float32x4_t vtrn1q_f32(float32x4_t a, float32x4_t b); // VTRN.32 d0,d0
+_NEON2SSESTORAGE float32x4_t vtrn2q_f32(float32x4_t a, float32x4_t b); // VTRN.32 d0,d0
 _NEON2SSE_GLOBAL poly8x16x2_t vtrnq_p8(poly8x16_t a, poly8x16_t b); // VTRN.8 q0,q0
 _NEON2SSE_GLOBAL poly16x8x2_t vtrnq_p16(poly16x8_t a, poly16x8_t b); // VTRN.16 q0,q0
 //Interleave elements
@@ -16018,6 +16020,32 @@ _NEON2SSE_INLINE float32x4x2_t vtrnq_f32(float32x4_t a, float32x4_t b) // VTRN.3
 
     f32x4.val[0] = _mm_unpacklo_ps(a_sh, b_sh); //a0, b0, a2, b2
     f32x4.val[1] = _mm_unpackhi_ps(a_sh, b_sh); //a1, b1, a3,  b3
+    return f32x4;
+}
+
+_NEON2SSESTORAGE float32x4_t vtrn1q_f32(float32x4_t a, float32x4_t b); // VTRN.32 d0,d0
+_NEON2SSE_INLINE float32x4_t vtrn1q_f32(float32x4_t a, float32x4_t b)
+{
+    //may be not optimal solution compared with serial
+    float32x4_t f32x4;
+    __m128 a_sh, b_sh;
+    a_sh = _mm_shuffle_ps (a, a, _MM_SHUFFLE(3,1, 2, 0)); //a0, a2, a1, a3, need to check endiness
+    b_sh = _mm_shuffle_ps (b, b, _MM_SHUFFLE(3,1, 2, 0)); //b0, b2, b1, b3, need to check endiness
+
+    f32x4 = _mm_unpacklo_ps(a_sh, b_sh); //a0, b0, a2, b2
+    return f32x4;
+}
+
+_NEON2SSESTORAGE float32x4_t vtrn2q_f32(float32x4_t a, float32x4_t b); // VTRN.32 d0,d0
+_NEON2SSE_INLINE float32x4_t vtrn2q_f32(float32x4_t a, float32x4_t b)
+{
+    //may be not optimal solution compared with serial
+    float32x4_t f32x4;
+    __m128 a_sh, b_sh;
+    a_sh = _mm_shuffle_ps (a, a, _MM_SHUFFLE(3,1, 2, 0)); //a0, a2, a1, a3, need to check endiness
+    b_sh = _mm_shuffle_ps (b, b, _MM_SHUFFLE(3,1, 2, 0)); //b0, b2, b1, b3, need to check endiness
+
+    f32x4 = _mm_unpackhi_ps(a_sh, b_sh); //a1, b1, a3,  b3
     return f32x4;
 }
 
